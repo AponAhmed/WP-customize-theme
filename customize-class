@@ -1,4 +1,22 @@
-class MyTheme_Customize {
+
+		function get_copyright($echo=false){
+			$copyText = get_theme_mod('copyright_text');
+			if($echo==true){
+				echo $copyText;
+				}else{
+				return $copyText;
+			}
+		}
+		function is_slider(){
+			$slider = get_theme_mod('home_slider');
+			if($slider=='true'){
+				return true;
+				}else{
+				return false;
+			}
+		}
+		
+		class MyTheme_Customize {
 			function __construct() {
 				// Setup the Theme Customizer settings and controls...
 				add_action( 'customize_register' , array($this, 'register' ) );
@@ -12,7 +30,7 @@ class MyTheme_Customize {
 			
 			public static function register ( $wp_customize ) {
 				//1. Define a new section (if desired) to the Theme Customizer
-			
+				
 				$wp_customize->add_section( 'mytheme_options', 
 				array(
 				'title'       => __( 'Theme Options', 'mytheme' ), //Visible title of section
@@ -32,13 +50,31 @@ class MyTheme_Customize {
 				) 
 				);      
 				
+				//2. Register new settings to the WP database...
+				$wp_customize->add_setting( 'copyright_text', //No need to use a SERIALIZED name, as `theme_mod` settings already live under one db record
+				array(
+				'default'    => '', //Default setting/value to save
+				'type'       => 'theme_mod', //Is this an 'option' or a 'theme_mod'?
+				'capability' => 'edit_theme_options', //Optional. Special permissions for accessing this setting.
+				'transport'  => 'refresh', //What triggers a refresh of the setting? 'refresh' or 'postMessage' (instant)?
+				) 
+				);      				
+				//2. Register new settings to the WP database...
+				$wp_customize->add_setting( 'home_slider', //No need to use a SERIALIZED name, as `theme_mod` settings already live under one db record
+				array(
+				'default'    => 'false', //Default setting/value to save
+				'type'       => 'theme_mod', //Is this an 'option' or a 'theme_mod'?
+				'capability' => 'edit_theme_options', //Optional. Special permissions for accessing this setting.
+				'transport'  => 'refresh', //What triggers a refresh of the setting? 'refresh' or 'postMessage' (instant)?
+				) 
+				);    
 				//2. Register Another settings to the WP database...
 				$wp_customize->add_setting( 'container_width', //No need to use a SERIALIZED name, as `theme_mod` settings already live under one db record
 				array(
 				'default'    => '970px', //Default setting/value to save
 				'type'       => 'theme_mod', //Is this an 'option' or a 'theme_mod'?
 				'capability' => 'edit_theme_options', //Optional. Special permissions for accessing this setting.
-				'transport'  => 'postMessage', //What triggers a refresh of the setting? 'refresh' or 'postMessage' (instant)?
+				'transport'  => 'refresh', //What triggers a refresh of the setting? 'refresh' or 'postMessage' (instant)?
 				) 
 				);      
 				
@@ -47,7 +83,26 @@ class MyTheme_Customize {
 				'type' => 'text',
 				'settings'   => 'container_width',
 				'section' => 'mytheme_options',
-				 'description' => __( 'Container width in Pixel', 'mytheme' ),
+				'description' => __( 'Container width in Pixel', 'mytheme' ),
+				));
+				
+				$wp_customize->add_control('mytheme_home_slider', array(
+				'label' => __( 'Home Slider', 'mytheme' ),
+				'type' => 'select',
+				'settings'   => 'home_slider',
+				'section' => 'mytheme_options',
+				'choices'  => array(
+				'true'  => 'True',
+				'false' => 'False',
+				),
+				));
+				
+				$wp_customize->add_control('mytheme_copyright', array(
+				'label' => __( 'Copyright', 'mytheme' ),
+				'type' => 'text',
+				'settings'   => 'copyright_text',
+				'section' => 'title_tagline',
+				'description' => __( 'Add Copyright Text', 'mytheme' ),
 				));
 				
 				//3. Finally, we define the control itself (which links a setting to a section and renders the HTML controls)...
