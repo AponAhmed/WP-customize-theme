@@ -40,6 +40,13 @@
 		value.bind( function( newval ) {
 			$('a').css('color', newval );
 		} );
-	} );
+	});
+	
+	//Update site link color in real time...
+	wp.customize( 'container_width', function( value ) {
+		value.bind( function( newval ) {
+			$('.wrapper').css('max-width', newval );
+		} );
+	});
 	
 } )( jQuery );
